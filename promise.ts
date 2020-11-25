@@ -1,11 +1,16 @@
 function resolve(result) {
+    if(this.state !== Promise2.PENDING) return;
+    this.state = Promise2.FULLFILLED;
     setTimeout(() => {
         this.stack.forEach(({ success, fail }) => {
-            if (typeof success === 'function') success(result);
+            if (typeof success === 'function') 
+                success(result);
         })
     })
 }
 function reject(reason) {
+    if(this.state !== Promise2.PENDING) return;
+    this.state = Promise2.REJECTED;
     setTimeout(() => {
         this.stack.forEach(({ success, fail }) => {
             if (typeof fail === 'function') fail(reason);
@@ -24,14 +29,20 @@ export class Promise2 {
         fun(resolve.bind(this), reject.bind(this));
     }
 
-    stack = []
+    private stack = []
 
-    state = Promise2.PENDING
+    private state = Promise2.PENDING
 
     then(success?, fail?) {
+        const promise2 = new Promise2(function (resolve, reject) {});
         this.stack.push({
+            // success: success.bind(),
+            // fail: fail.bind(),
             success,
-            fail
+            fail,
+            nextPromise: promise2
         })
+
+        return promise2;
     }
 }
