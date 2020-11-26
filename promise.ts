@@ -9,13 +9,15 @@ function resolve(result) {
             }
             try {
                 const res = success(result);
+                
                 resolveWith(promise2, res);
             } catch (err) {
                 reject.call(promise2, err);
             }
         })
-    })
+    },0)
 }
+
 function reject(reason) {
     if (this.state !== Promise2.PENDING) return;
     this.state = Promise2.REJECTED;
@@ -32,13 +34,14 @@ function reject(reason) {
                 reject.call(promise2, err);
             }
         })
-    })
+    },0)
 }
 
 function resolveWith(promise, x) {
     if (promise === x) {
         reject.call(promise, new TypeError(''));
     } else if (x instanceof Promise2) {
+        
         x.then((result) => {
             resolve.call(promise, result)
         }, (reason) => {
@@ -68,7 +71,6 @@ function resolveWith(promise, x) {
     } else {
         resolve.call(promise, x);
     }
-
 }
 
 export class Promise2 {

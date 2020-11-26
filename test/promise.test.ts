@@ -136,18 +136,43 @@ describe('promise', function () {
         const promise = new Promise2(function () {}).then();
         assert(promise instanceof Promise2);
     })
-    
+
     it('2.2.7 第一个then的success的返回值，可以被第二个then接收到', function (done) {
-        const promise = new Promise2(function (resolve) {
+        const promise = new Promise2(function (resolve, reject) {
             resolve()
-        }).then(function () {
-            return 'success'
-        }).then(function (result) {
-            console.log('-------------------++++');
-            assert(result === 'scfcess');
+        }).then(() => {
+            return 'success';
+        }).then((result) => {
+            assert(result === 'success')
             done();
         })
 
     })
 
+    it('2.2.7 第一个then的fail的返回值，可以被第二个then接收到', function (done) {
+        const promise = new Promise2(function (resolve, reject) {
+            reject()
+        }).then(null, () => {
+            return 'fail';
+        }).then((err) => {
+            assert(err === 'fail')
+            done();
+        })
+
+    })
+
+    it('then返回一个promise, 第二个then 会得到promise的结果', function (done) {
+        const promise = new Promise2(function (resolve, reject) {
+            resolve()
+        }).then(() => {
+            const pro = new Promise2((resolve, reject) => { resolve('promise') })
+            return pro;
+        }).then((result) => {
+            console.log(result);
+            assert(result === 'promise');
+            done();
+        })
+
+        
+    })
 })
