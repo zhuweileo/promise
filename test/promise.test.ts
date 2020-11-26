@@ -137,6 +137,17 @@ describe('promise', function () {
         assert(promise instanceof Promise2);
     })
     
-    it('')
+    it('2.2.7 第一个then的success的返回值，可以被第二个then接收到', function (done) {
+        const promise = new Promise2(function (resolve) {
+            resolve()
+        }).then(function () {
+            return 'success'
+        }).then(function (result) {
+            console.log('-------------------++++');
+            assert(result === 'scfcess');
+            done();
+        })
+
+    })
 
 })
