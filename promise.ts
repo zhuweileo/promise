@@ -1,7 +1,7 @@
 function resolve(result) {
     if (this.state !== Promise2.PENDING) return;
     this.state = Promise2.FULLFILLED;
-    setTimeout(() => {
+    nextTick(() => {
         this.stack.forEach(({ success, fail, promise2 }) => {
             if (typeof success !== 'function') {
                 resolve.call(promise2, result);
@@ -9,13 +9,13 @@ function resolve(result) {
             }
             try {
                 const res = success(result);
-                
+
                 resolveWith(promise2, res);
             } catch (err) {
                 reject.call(promise2, err);
             }
         })
-    },0)
+    })
 }
 
 function reject(reason) {
@@ -34,14 +34,14 @@ function reject(reason) {
                 reject.call(promise2, err);
             }
         })
-    },0)
+    })
 }
 
 function resolveWith(promise, x) {
     if (promise === x) {
         reject.call(promise, new TypeError(''));
     } else if (x instanceof Promise2) {
-        
+
         x.then((result) => {
             resolve.call(promise, result)
         }, (reason) => {
@@ -100,3 +100,30 @@ export class Promise2 {
         return promise2;
     }
 }
+
+const nextTick = function () {
+    var callbacks = [];
+    function resolveCallbacks() {
+        const copys = callbacks.slice(0);
+        copys.forEach(cb => {
+            cb();
+        });
+        callbacks.length = 0;
+    }
+    if (typeof process !== undefined && process.nextTick) {
+        return process.nextTick;
+    } else {
+        var counter = 1;
+        var textNode = document.createTextNode(String(counter));
+        var observer = new MutationObserver(resolveCallbacks);
+
+        observer.observe(textNode, {
+            characterData: true
+        });
+        return function (fun) {
+            callbacks.push(fun);
+            counter = (counter + 1) % 2;
+            textNode.data = String(counter);
+        }
+    }
+}()

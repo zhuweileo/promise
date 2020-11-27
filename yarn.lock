@@ -48,6 +48,11 @@
   resolved "https://registry.npm.taobao.org/@types/mocha/download/@types/mocha-8.0.4.tgz#b840c2dce46bacf286e237bfb59a29e843399148"
   integrity sha1-uEDC3ORrrPKG4je/tZop6EM5kUg=
 
+"@types/node@^14.14.10":
+  version "14.14.10"
+  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-14.14.10.tgz?cache=0&sync_timestamp=1606285847450&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-14.14.10.tgz#5958a82e41863cfc71f2307b3748e3491ba03785"
+  integrity sha1-WVioLkGGPPxx8jB7N0jjSRugN4U=
+
 "@types/sinon@^9.0.9":
   version "9.0.9"
   resolved "https://registry.npm.taobao.org/@types/sinon/download/@types/sinon-9.0.9.tgz?cache=0&sync_timestamp=1606207372049&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fsinon%2Fdownload%2F%40types%2Fsinon-9.0.9.tgz#115843b491583f924080f684b6d0d7438344f73c"

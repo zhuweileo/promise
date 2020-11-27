@@ -168,11 +168,8 @@ describe('promise', function () {
             const pro = new Promise2((resolve, reject) => { resolve('promise') })
             return pro;
         }).then((result) => {
-            console.log(result);
             assert(result === 'promise');
             done();
         })
-
-        
     })
 })

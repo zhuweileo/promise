@@ -1,14 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <script>
         console.log('start');
 
+        const nextTick = function () {
+            var callbacks = [];
+            function resolveCallbacks() {
+                const copys = callbacks.slice(0);
+                copys.forEach(cb => {
+                    cb();
+                });
+                callbacks.length = 0;
+            }
+            if (this !== window && process && process.nextTick) {
+                return process.nextTick;
+            } else {
+                var counter = 1;
+                var textNode = document.createTextNode(String(counter));
+                var observer = new MutationObserver(resolveCallbacks);
+
+                observer.observe(textNode, {
+                    characterData: true
+                });
+                return function (fun) {
+                    callbacks.push(fun);
+                    counter = (counter + 1) % 2;
+                    textNode.data = String(counter);
+                }
+            }
+        }()
         // 浏览器微任务 
         queueMicrotask(() => {
             console.log('micro 1');
@@ -16,10 +44,17 @@
         queueMicrotask(() => {
             console.log('micro 2');
         })
+        nextTick(() => {
+            console.log('tick 1');
+        })
+        nextTick(() => {
+            console.log('tick 2');
+        })
 
         setTimeout(function () {
             console.log('next task');
         }, 0)
     </script>
 </body>
+
 </html>
