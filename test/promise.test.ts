@@ -161,7 +161,7 @@ describe('promise', function () {
 
     })
 
-    it('then返回一个promise, 第二个then 会得到promise的结果', function (done) {
+    it('then 的 success 返回一个promise, 第二个then 会得到promise的结果', function (done) {
         const promise = new Promise2(function (resolve, reject) {
             resolve()
         }).then(() => {
@@ -172,4 +172,74 @@ describe('promise', function () {
             done();
         })
     })
+
+    it('then success 返回一个promise, 且失败了', function (done) {
+        const promise = new Promise2(function (resolve, reject) {
+            resolve()
+        }).then(() => {
+            const pro = new Promise2((resolve, reject) => { reject('promise') })
+            return pro;
+        }).then(null, (error) => {
+            assert(error === 'promise');
+            done();
+        })
+    })
+    
+    it('then 的 fail 返回一个promise, 第二个then 会得到promise的结果', function (done) {
+        const promise = new Promise2(function (resolve, reject) {
+            reject()
+        }).then(null, () => {
+            const pro = new Promise2((resolve, reject) => { resolve('promise') })
+            return pro;
+        }).then((result) => {
+            assert(result === 'promise');
+            done();
+        })
+    })
+
+    it('then fail 返回一个promise, 且失败了', function (done) {
+        const promise = new Promise2(function (resolve, reject) {
+            reject()
+        }).then(null, () => {
+            const pro = new Promise2((resolve, reject) => { reject('promise') })
+            return pro;
+        }).then(null, (error) => {
+            
+            assert(error === 'promise');
+            done();
+        })
+    })
+
+    it('如果 success 抛出一个异常, promise2 必须被拒绝', function (done) {
+        const fun = sinon.fake();
+        const err = new Error();
+        const promise = new Promise2(function (resolve, reject) {
+            resolve()
+        }).then(() => {
+            throw err; 
+        }).then(null, fun);
+
+        setTimeout(function () {
+            assert(fun.called);
+            assert(fun.calledWith(err))
+            done();
+        }, 0)
+    })
+    it('如果 fail 抛出一个异常, promise2 必须被拒绝', function (done) {
+        const fun = sinon.fake();
+        const err = new Error();
+        const promise = new Promise2(function (resolve, reject) {
+            reject()
+        }).then(null,() => {
+            console.log('----------------')
+            throw err; 
+        }).then(null, fun);
+
+        setTimeout(function () {
+            assert(fun.called);
+            assert(fun.calledWith(err))
+            done();
+        }, 0)
+    })
+
 })

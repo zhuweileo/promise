@@ -9,7 +9,6 @@ function resolve(result) {
             }
             try {
                 const res = success(result);
-
                 resolveWith(promise2, res);
             } catch (err) {
                 reject.call(promise2, err);
@@ -21,14 +20,16 @@ function resolve(result) {
 function reject(reason) {
     if (this.state !== Promise2.PENDING) return;
     this.state = Promise2.REJECTED;
-    setTimeout(() => {
+    nextTick(() => {
         this.stack.forEach(({ success, fail, promise2 }) => {
             if (typeof fail !== 'function') {
                 resolve.call(promise2, reason);
                 return
             }
             try {
+                console.log(2);
                 const res = fail(reason);
+                console.log(3);
                 resolveWith(promise2, res);
             } catch (err) {
                 reject.call(promise2, err);
